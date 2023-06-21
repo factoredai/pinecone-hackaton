@@ -23,10 +23,6 @@ def main(config: DictConfig):
     dataset.abstract = dataset.abstract.apply(func.process_text)
     
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    if device != 'cuda':
-        print(f"You are using {device}. This is much slower than using "
-            "a CUDA-enabled GPU. If on Colab you can change this by "
-            "clicking Runtime > Change runtime type > GPU.")
 
     model = sentence_transformers.SentenceTransformer('all-MiniLM-L6-v2', device=device) #hydra.utils.get_class(config.embed_model.model)(config.embed_model.source, device=device)
     
@@ -67,17 +63,17 @@ def main(config: DictConfig):
     
     print('UPSERTTING STARTED')
     for i in tqdm(range(0, len(abstracts), batch_size)):
-        # find end of batch
+        
         i_end = min(i+batch_size, len(abstracts))
-        # create IDs batch
+        
         ids = [str(x) for x in range(i, i_end)]
-        # create metadata batch
+        
         metadatas = [{'text': text} for text in abstracts[i:i_end]]
-        # create embeddings
+        
         xc = model.encode(abstracts[i:i_end]).tolist()
-        # create records list for upsert
+        
         records = zip(ids, xc, metadatas)
-        # upsert to Pinecone
+       
         index.upsert(vectors=records)
 
     print(index.describe_index_stats())
