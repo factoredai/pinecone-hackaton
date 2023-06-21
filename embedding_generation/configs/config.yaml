@@ -1,0 +1,14 @@
+dataset:
+  source:
+    _target_: pandas.read_json
+    path_or_buf: '/Users/danielgomez/Pinecone_challenge/partition_001.json'
+    lines: True
+  dropna: True
+
+embed_model: 
+  model: sentence_transformers.SentenceTransformer
+  source: 'all-MiniLM-L6-v2'
+  batch_size: 128
+
+index:
+  index_name: 'pinecone-hackathon'
