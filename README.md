@@ -7,3 +7,14 @@ If all dependencies got installed you should be able to run the application usin
 ```
 chainlit run frontend/demo.py -w
 ```
+
+Example:
+```
+Does the context say anything about organic electroluminescence?
+```
+
+After the chatbot answers, ask another question such as:
+```
+What does it say?
+```
+
