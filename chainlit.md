@@ -53,4 +53,8 @@ There were two main challenges we ran into when developing PatentBot:
 
 ## Accomplishments that we're proud of
 
-We build a Bot with multiple capabilities able to tackle three main common challenges when developing a patent: the search for prior works, patent drafting and comparing. The automation of these tasks can help reduce costs and increase efficiency in patent processes. Our bot has the potential of becoming an scalable app with high impact, that in this first version accomplished great results.
+We built a Bot with multiple capabilities able to tackle three main common challenges when developing a patent: the search for prior works, patent drafting and comparing. The automation of these tasks can help reduce costs and increase efficiency in patent processes. Our bot has the potential of becoming an scalable application   with high impact, that in this first version accomplished great results.
+## What's next for PatentBot
+The main functionality that considered could be added to the PatentBot is the possibility of having users with different permissions and capabilities inside the application. This will increase robustness of the app and secure flow of information. 
+
+In addition, a further research with attorneys and eventual users of the application can give us ideas on what are the key points to enhance and functionalities to add so that PatentBot can tackle as many issues in the patent processes as possible. 
