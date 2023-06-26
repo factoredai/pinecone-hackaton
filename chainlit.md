@@ -43,3 +43,10 @@ PatentBot is an advanced patent documentation tool that integrates various techn
 - AWS for Deployment: PatentBot is deployed on the cloud infrastructure provided by Amazon Web Services (AWS). AWS offers a scalable and reliable cloud environment that ensures PatentBot's availability, performance, and security. By leveraging AWS services, PatentBot can handle varying user loads, scale resources as needed, and provide a seamless experience for users.
 
 - ChatGPT for Documentation Creation: PatentBot also incorpores ChatGPT, a powerful language model developed by OpenAI, to assist in creating the project documentation. ChatGPT leverages its language generation capabilities to generate clear and concise descriptions of its own functionalities.
+
+##  Challenges we ran into
+
+There were two main challenges we ran into when developing PatentBot: 
+1. Evaluating the quality of the generated embeddings. There are multiple ways to generate embeddings however evaluating their suitability for an specific task and quantify can be challenging. We approached this problem with a categorization metric in which we used CPCs as labels and using a reference text for each CPC we query the most similar embeddings in the database compare their CPC to the reference text's. Hence, we can quantify it as a classification task. Nevertheless, due to issues with ID for each patent and lack of metadata we decided to migrate from Big Patent as primary dataset to The Harvard USPTO Patent Dataset changing the requirements for evaluation and the proper definition of a categorization metric.
+
+2. Proper source referencing for the tasks of the PatentBot was also a challenge since id referencing in our bot was inaccurate and in sometimes retrieved ids not present in the dataset.
