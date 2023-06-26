@@ -56,6 +56,7 @@ async def start():
         cl.Action(name="action_button", value='compare_patent', description="Click me!", label = "Compare your patent")]
     cl.user_session.set("actions", actions)
 
+
     await cl.Message(content="How can PatentBot help you today?", actions=actions).send()
 
 @cl.on_message

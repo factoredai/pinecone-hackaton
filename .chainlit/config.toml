@@ -1,12 +1,12 @@
 [project]
 # If true (default), the app will be available to anonymous users.
 # If false, users will need to authenticate and be part of the project to use the app.
-public = true
+public = false
 
 # The project ID (found on https://cloud.chainlit.io).
 # If provided, all the message data will be stored in the cloud.
 # The project ID is required when public is set to false.
-#id = "PatentBot-Z5CZKm5nd6tS"
+id = "PatentBot-Z5CZKm5nd6tS"
 
 # Whether to enable telemetry (default: true). No personal data is collected.
 enable_telemetry = false
@@ -25,7 +25,7 @@ name = "PatentBot"
 default_expand_messages = false
 
 # Hide the chain of thought details from the user in the UI.
-hide_cot = true
+hide_cot = false
 
 # Link to your github repo. This will add a github button in the UI's header.
 github = "https://github.com/factoredai/pinecone-hackaton"
