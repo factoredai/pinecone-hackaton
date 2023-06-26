@@ -1,12 +1,12 @@
 [project]
 # If true (default), the app will be available to anonymous users.
 # If false, users will need to authenticate and be part of the project to use the app.
-public = true
+public = false
 
 # The project ID (found on https://cloud.chainlit.io).
 # If provided, all the message data will be stored in the cloud.
 # The project ID is required when public is set to false.
-#id = "PatentBot-Z5CZKm5nd6tS"
+id = "PatentBot-zxZQUdsXDBAo"
 
 # Whether to enable telemetry (default: true). No personal data is collected.
 enable_telemetry = false
@@ -19,7 +19,7 @@ user_env = []
 name = "PatentBot"
 
 # Description of the app and chatbot. This is used for HTML tags.
-# description = ""
+description = "A helpful chatbot for patent search, curation, creation and comparison."
 
 # The default value for the expand messages settings.
 default_expand_messages = false
