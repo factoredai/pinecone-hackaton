@@ -47,6 +47,10 @@ PatentBot is an advanced patent documentation tool that integrates various techn
 ##  Challenges we ran into
 
 There were two main challenges we ran into when developing PatentBot: 
-1. Evaluating the quality of the generated embeddings. There are multiple ways to generate embeddings however evaluating their suitability for an specific task and quantify can be challenging. We approached this problem with a categorization metric in which we used CPCs as labels and using a reference text for each CPC we query the most similar embeddings in the database compare their CPC to the reference text's. Hence, we can quantify it as a classification task. Nevertheless, due to issues with ID for each patent and lack of metadata we decided to migrate from Big Patent as primary dataset to The Harvard USPTO Patent Dataset changing the requirements for evaluation and the proper definition of a categorization metric.
+1. Evaluating the quality of the generated embeddings. There are multiple ways to generate embeddings however evaluating their suitability for an specific task and quantify can be challenging. We approached this problem with a categorization metric in which we used CPCs as labels and using a reference text for each CPC we query the most similar embeddings in the database compare their CPC to the one of the text used as reference. Hence, we can quantify it as a classification task. Nevertheless, due to issues with ID for each patent and lack of metadata we decided to migrate from Big Patent as primary dataset to The Harvard USPTO Patent Dataset changing the requirements for evaluation and the proper definition of a categorization metric.
 
 2. Proper source referencing for the tasks of the PatentBot was also a challenge since during some stages of the development process, id referencing in our bot was inaccurate and in sometimes retrieved ids not present in the dataset.
+
+## Accomplishments that we're proud of
+
+We build a Bot with multiple capabilities able to tackle three main common challenges when developing a patent: the search for prior works, patent drafting and comparing. The automation of these tasks can help reduce costs and increase efficiency in patent processes. Our bot has the potential of becoming an scalable app with high impact, that in this first version accomplished great results.
