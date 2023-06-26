@@ -7,6 +7,8 @@ COPY requirements.txt ./
 RUN python -m pip install --upgrade pip && pip install --upgrade setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY .chainlit .chainlit
+
 COPY frontend frontend
 
 EXPOSE 8000
