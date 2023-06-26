@@ -4,7 +4,7 @@ from configparser import ConfigParser
 import chainlit as cl
 import pinecone
 from dotenv import load_dotenv
-from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import CohereEmbeddings
 from langchain.embeddings.base import Embeddings
@@ -114,7 +114,7 @@ async def get_model(task: str, embeddings: Embeddings):
 
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-    chain = ConversationalRetrievalChain.from_llm(
+    chain = RetrievalQAWithSourcesChain.from_llm(
         ChatOpenAI(temperature=0, streaming=True, openai_api_key=openai_api_key),
         chain_type="stuff",
         retriever=docsearch.as_retriever(),
