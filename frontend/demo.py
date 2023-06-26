@@ -12,7 +12,7 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 
-from prompts import system_template
+from prompts import TEMPLATES
 
 import os
 from dotenv import load_dotenv
@@ -24,12 +24,7 @@ pinecone.init(api_key=os.getenv("PINECONE_API_KEY"),environment=os.getenv("PINEC
 openai_api_key = os.environ["OPENAI_API_KEY"] 
 
 
-messages = [
-    SystemMessagePromptTemplate.from_template(system_template),
-    HumanMessagePromptTemplate.from_template("{question}"),
-]
-prompt = ChatPromptTemplate.from_messages(messages)
-chain_type_kwargs = {"prompt": prompt}
+embeddings = HuggingFaceInstructEmbeddings()
 
 @cl.action_callback("action_button")
 async def on_action(action):
@@ -44,7 +39,9 @@ async def on_action(action):
     elif action.value == "compare_patent":
         await cl.Message(content="You chose to compare your patent. What is your patent?", author = 'Curator').send()
         cl.user_session.set("botname", "Curator")
-                    
+
+    await get_model(action.value)
+
     for action in actions:
         await action.remove()
     # Optionally remove the action button from the chatbot user interface
@@ -58,6 +55,7 @@ async def start():
         cl.Action(name="action_button", value='draft_patent', description="Click me!", label = "Draft your patent"),
         cl.Action(name="action_button", value='compare_patent', description="Click me!", label = "Compare your patent")]
     cl.user_session.set("actions", actions)
+
 
     await cl.Message(content="How can PatentBot help you today?", actions=actions).send()
 
@@ -83,16 +81,25 @@ async def get_model(task: str):
     if cl.user_session.get("chain"):
         return cl.user_session.get("chain")
     
-    embeddings = HuggingFaceInstructEmbeddings()
     docsearch = await cl.make_async(Pinecone.from_existing_index)(
-        'second-test', embeddings
+        'final-version', embeddings
     )
+
+    messages = [
+        SystemMessagePromptTemplate.from_template(TEMPLATES[task]),
+        HumanMessagePromptTemplate.from_template("{question}"),
+    ]
+
+    prompt = ChatPromptTemplate.from_messages(messages)
+
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
     chain = ConversationalRetrievalChain.from_llm(
         ChatOpenAI(temperature=0, streaming = True, openai_api_key=openai_api_key),
         chain_type="stuff",
         retriever=docsearch.as_retriever(),
         memory=memory,
+        verbose=False,
+        combine_docs_chain_kwargs={"prompt": prompt, "document_variable_name": "summaries"}
     )
     cl.user_session.set("chain", chain)
     return chain
