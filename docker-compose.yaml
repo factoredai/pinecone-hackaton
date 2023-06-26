@@ -1,0 +1,108 @@
+version: "3.3"
+
+services:
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - bot-network
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --accesslog
+      - --log
+      - --log.level=DEBUG
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=bot-network"
+      # middlewares
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+
+  bot1:
+    image: patentbot
+    build: .
+    container_name: bot1
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - bot-network
+    env_file:
+      - ./frontend/.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=bot-network"
+      - "traefik.http.services.ui.loadbalancer.server.port=8000"
+      # HTTP
+      - "traefik.http.routers.ui-http.entrypoints=http"
+      - "traefik.http.routers.ui-http.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.ui-http.middlewares=https-redirect"
+      # HTTPS
+      - "traefik.http.routers.ui-https.entrypoints=https"
+      - "traefik.http.routers.ui-https.tls=true"
+      - "traefik.http.routers.ui-https.rule=Host(`${DOMAIN_NAME}`)"
+      # SSO middleware
+      - "traefik.http.routers.ui-https.middlewares=sso@docker"
+
+  bot2:
+    image: patentbot
+    build: .
+    container_name: bot2
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - bot-network
+    env_file:
+      - ./frontend/.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=bot-network"
+      - "traefik.http.services.ui.loadbalancer.server.port=8000"
+      # HTTP
+      - "traefik.http.routers.ui-http.entrypoints=http"
+      - "traefik.http.routers.ui-http.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.ui-http.middlewares=https-redirect"
+      # HTTPS
+      - "traefik.http.routers.ui-https.entrypoints=https"
+      - "traefik.http.routers.ui-https.tls=true"
+      - "traefik.http.routers.ui-https.rule=Host(`${DOMAIN_NAME}`)"
+      # SSO middleware
+      - "traefik.http.routers.ui-https.middlewares=sso@docker"
+
+
+  auth:
+    image: thomseddon/traefik-forward-auth:latest
+    container_name: auth
+    restart: always
+    depends_on:
+      - traefik
+    networks:
+      - bot-network
+    command:
+        - --default-provider=oidc
+        - --log-level=debug
+        - --log-format=pretty
+        - --lifetime=3600
+    env_file:
+      - ./frontend/oauth.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=bot-network"
+      - "traefik.http.services.sso.loadbalancer.server.port=4181"
+      # ForwardAuth middleware
+      - "traefik.http.middlewares.sso.forwardauth.address=http://auth:4181"
+      - "traefik.http.middlewares.sso.forwardauth.trustForwardHeader=true"
+      - "traefik.http.middlewares.sso.forwardauth.authResponseHeaders=X-Forwarded-Host,X-Forwarded-User"
+
+networks:
+  bot-network:
+    external: true
