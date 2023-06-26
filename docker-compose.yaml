@@ -37,6 +37,8 @@ services:
 #      - bot-network
     env_file:
       - ./frontend/.env
+    ports:
+      - "80:8000"
 #    labels:
 #      - "traefik.enable=true"
 #      - "traefik.docker.network=bot-network"
