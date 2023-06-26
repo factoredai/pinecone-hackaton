@@ -1,6 +1,8 @@
 from langchain.embeddings.huggingface import HuggingFaceInstructEmbeddings
+from langchain.embeddings.cohere import CohereEmbeddings
 from langchain.vectorstores.pinecone import Pinecone
 from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import RetrievalQAWithSourcesChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (
     ChatPromptTemplate,
@@ -24,7 +26,10 @@ pinecone.init(api_key=os.getenv("PINECONE_API_KEY"),environment=os.getenv("PINEC
 openai_api_key = os.environ["OPENAI_API_KEY"] 
 
 
-embeddings = HuggingFaceInstructEmbeddings()
+#embeddings = HuggingFaceInstructEmbeddings()
+api_key = os.environ["COHERE_API_KEY"]
+embeddings = CohereEmbeddings(cohere_api_key = api_key, model = 'embed-english-v2.0')
+
 
 @cl.action_callback("action_button")
 async def on_action(action):
@@ -82,7 +87,7 @@ async def get_model(task: str):
         return cl.user_session.get("chain")
     
     docsearch = await cl.make_async(Pinecone.from_existing_index)(
-        'final-version', embeddings
+        'patentbot', embeddings
     )
 
     messages = [
@@ -92,14 +97,21 @@ async def get_model(task: str):
 
     prompt = ChatPromptTemplate.from_messages(messages)
 
-    memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+    memory = ConversationBufferMemory(memory_key="chat_history", output_key = "answer",  return_messages=True)
     chain = ConversationalRetrievalChain.from_llm(
         ChatOpenAI(temperature=0, streaming = True, openai_api_key=openai_api_key),
         chain_type="stuff",
         retriever=docsearch.as_retriever(),
         memory=memory,
-        verbose=False,
+        verbose=True,
+        return_source_documents=False,
         combine_docs_chain_kwargs={"prompt": prompt, "document_variable_name": "summaries"}
     )
+    # chain = RetrievalQAWithSourcesChain.from_chain_type(
+    #     llm=ChatOpenAI(temperature=0, streaming = True, openai_api_key=openai_api_key),
+    #     chain_type="stuff",
+    #     retriever=docsearch.as_retriever(),
+    #     verbose = True
+    # )
     cl.user_session.set("chain", chain)
     return chain
