@@ -103,7 +103,7 @@ async def get_model(task: str):
         chain_type="stuff",
         retriever=docsearch.as_retriever(),
         memory=memory,
-        verbose=True,
+        verbose=False,
         return_source_documents=False,
         combine_docs_chain_kwargs={"prompt": prompt, "document_variable_name": "summaries"}
     )
