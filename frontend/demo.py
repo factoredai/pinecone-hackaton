@@ -24,6 +24,7 @@ pinecone.init(api_key=os.getenv("PINECONE_API_KEY"),environment=os.getenv("PINEC
 openai_api_key = os.environ["OPENAI_API_KEY"] 
 
 
+embeddings = HuggingFaceInstructEmbeddings()
 
 @cl.action_callback("action_button")
 async def on_action(action):
@@ -79,9 +80,8 @@ async def get_model(task: str):
     if cl.user_session.get("chain"):
         return cl.user_session.get("chain")
     
-    embeddings = HuggingFaceInstructEmbeddings()
     docsearch = await cl.make_async(Pinecone.from_existing_index)(
-        'second-test', embeddings
+        'final-version', embeddings
     )
 
     messages = [

@@ -17,7 +17,16 @@ Begin!
 {summaries}"""
 
 draft_patent_template: str = """You are a useful and friendly patent writing assistant.
-Based on the information the user gave you, draft a patent abstract using the style from the following patent abstracts. 
+Based on the information the user gave you, your task is to perform the following actions: 
+1 - Design a title for the patent.
+2 - Draft a patent abstract using the style from the following patent abstracts. 
+3 - Write a list of claims supporting the topic discussed in the patent abstract
+4- Output a json object that contains the following keys: title, abstract, claims
+
+Use the following format:
+Title: <title of the patent>
+Abstract: <Abstract of the patent>
+List of claims: <claims>
 
 Begin!
 ----------------
